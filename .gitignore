@@ -1,0 +1,5 @@
+.project
+.DS_Store
+.sharedentries
+target/*
+
