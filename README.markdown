@@ -1,6 +1,8 @@
+Zend Service Solr
+========
 
-Example Usage - Solr model (Plus zend pagination)
--
+---
+*Example usage - Solr model (Plus zend pagination)*
 
     class Model_Solr {
 
