@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
@@ -35,7 +36,6 @@
  * @subpackage Solr
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
-
 require_once 'Zend/Service/Solr/HttpTransport/Response.php';
 
 /**
@@ -43,51 +43,51 @@ require_once 'Zend/Service/Solr/HttpTransport/Response.php';
  * Implementations can then be plugged into the Service instance in order to user their
  * the desired method for making HTTP requests
  */
-interface Zend_Service_Solr_HttpTransport_Interface
-{
-	/**
-	 * Get the current default timeout for all HTTP requests
-	 *
-	 * @return float
-	 */
-	public function getDefaultTimeout();
-	
-	/**
-	 * Set the current default timeout for all HTTP requests
-	 *
-	 * @param float $timeout
-	 */
-	public function setDefaultTimeout($timeout);
-		
-	/**
-	 * Perform a GET HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param float $timeout
-	 * @return Zend_Service_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performGetRequest($url, $timeout = false);
-	
-	/**
-	 * Perform a HEAD HTTP operation with an optional timeout and return the response
-	 * headers - NOTE: head requests have no response body
-	 *
-	 * @param string $url
-	 * @param float $timeout
-	 * @return Zend_Service_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performHeadRequest($url, $timeout = false);
-	
-	/**
-	 * Perform a POST HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param string $rawPost
-	 * @param string $contentType
-	 * @param float $timeout
-	 * @return Zend_Service_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
+interface Zend_Service_Solr_HttpTransport_Interface {
+
+    /**
+     * Get the current default timeout for all HTTP requests
+     *
+     * @return float
+     */
+    public function getDefaultTimeout();
+
+    /**
+     * Set the current default timeout for all HTTP requests
+     *
+     * @param float $timeout
+     */
+    public function setDefaultTimeout($timeout);
+
+    /**
+     * Perform a GET HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param float $timeout
+     * @return Zend_Service_Solr_HttpTransport_Response HTTP response
+     */
+    public function performGetRequest($url, $timeout = false);
+
+    /**
+     * Perform a HEAD HTTP operation with an optional timeout and return the response
+     * headers - NOTE: head requests have no response body
+     *
+     * @param string $url
+     * @param float $timeout
+     * @return Zend_Service_Solr_HttpTransport_Response HTTP response
+     */
+    public function performHeadRequest($url, $timeout = false);
+
+    /**
+     * Perform a POST HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param string $rawPost
+     * @param string $contentType
+     * @param float $timeout
+     * @return Zend_Service_Solr_HttpTransport_Response HTTP response
+     */
+    public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
 }

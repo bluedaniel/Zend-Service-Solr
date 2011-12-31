@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
@@ -35,8 +36,6 @@
  * @subpackage Solr
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
-
-
 require_once 'Zend/Service/Solr/HttpTransport/Abstract.php';
 
 /**
@@ -44,153 +43,131 @@ require_once 'Zend/Service/Solr/HttpTransport/Abstract.php';
  * every request. This isn't the recommended way to use curl, but some version of
  * PHP have memory issues.
  */
-class Zend_Service_Solr_HttpTransport_CurlNoReuse extends Zend_Service_Solr_HttpTransport_Abstract
-{
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision:$';
+class Zend_Service_Solr_HttpTransport_CurlNoReuse extends Zend_Service_Solr_HttpTransport_Abstract {
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision:$';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id:$';
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id:$';
 
-	public function performGetRequest($url, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
-		
-		$curl = curl_init();
+    public function performGetRequest($url, $timeout = false) {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-		// set curl GET options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+        $curl = curl_init();
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+        // set curl GET options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
+            // set the URL
+            CURLOPT_URL => $url,
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// set the URL
-			CURLOPT_URL => $url,
+        // make the request
+        $responseBody = curl_exec($curl);
 
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-		// make the request
-		$responseBody = curl_exec($curl);
+        // close our curl session - we're done with it
+        curl_close($curl);
 
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-		
-		// close our curl session - we're done with it
-		curl_close($curl);
+        return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
+    }
 
-		return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
+    public function performHeadRequest($url, $timeout = false) {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-	public function performHeadRequest($url, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
-		
-		$curl = curl_init();
+        $curl = curl_init();
 
-		// set curl HEAD options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+        // set curl HEAD options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
+            // this both sets the method to HEAD and says not to return a body
+            CURLOPT_NOBODY => true,
+            // set the URL
+            CURLOPT_URL => $url,
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+        // make the request
+        $responseBody = curl_exec($curl);
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// this both sets the method to HEAD and says not to return a body
-			CURLOPT_NOBODY => true,
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-			// set the URL
-			CURLOPT_URL => $url,
+        // close our curl session - we're done with it
+        curl_close($curl);
 
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
+        return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
+    }
 
-		// make the request
-		$responseBody = curl_exec($curl);
+    public function performPostRequest($url, $postData, $contentType, $timeout = false) {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-		
-		// close our curl session - we're done with it
-		curl_close($curl);
+        $curl = curl_init();
 
-		return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
+        // set curl POST options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
+            // make sure we're POST
+            CURLOPT_POST => true,
+            // set the URL
+            CURLOPT_URL => $url,
+            // set the post data
+            CURLOPT_POSTFIELDS => $postData,
+            // set the content type
+            CURLOPT_HTTPHEADER => array("Content-Type: {$contentType}"),
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
 
-	public function performPostRequest($url, $postData, $contentType, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
+        // make the request
+        $responseBody = curl_exec($curl);
 
-		$curl = curl_init();
-		
-		// set curl POST options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+        // close our curl session - we're done with it
+        curl_close($curl);
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// make sure we're POST
-			CURLOPT_POST => true,
+        return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
+    }
 
-			// set the URL
-			CURLOPT_URL => $url,
-
-			// set the post data
-			CURLOPT_POSTFIELDS => $postData,
-
-			// set the content type
-			CURLOPT_HTTPHEADER => array("Content-Type: {$contentType}"),
-
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
-
-		// make the request
-		$responseBody = curl_exec($curl);
-
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-
-		// close our curl session - we're done with it
-		curl_close($curl);
-
-		return new Zend_Service_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
 }
